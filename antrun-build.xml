@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sbi" basedir="." default="copy-bundle" xmlns:fx="javafx:com.sun.javafx.tools.ant">
+    
+    <property file="../config.properties" />
+    
+    <target name="copy-bundle" description="Copy bundle to appropriate directory">
+      <antcall target="copy-bundle-jfx" />
+      <antcall target="copy-bundle-android" />
+    </target>
+    
+    <!-- Convert JavaFX CSS to binary form. It is assumed that stylessheets are in resources dir. -->
+    <target name="css-to-bin" if="app.jfx" description="Convert JavaFX CSS files to binary format">
+        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
+                 uri="javafx:com.sun.javafx.tools.ant"
+                 classpath=".:${jfx.ant}:${jfx.rt}"/>
+        <fx:csstobin outdir="${project.build.outputDirectory}">
+            <fileset dir="${basedir}/src/main/resources" includes="**/*.css" />
+        </fx:csstobin>
+    </target>
+    
+    <target name="copy-bundle-jfx" if="app.jfx" description="Copy bundle to distribution directory">
+        
+        <!-- copy bundle to 'bundles' directory -->
+        <copy file="${project.build.directory}/${maven.project.finalName}.jar" 
+              todir="${root.dir}/target/dist/${root.project.name}/bundles" />
+    </target>
+    
+    <target name="copy-bundle-android" if="app.android" description="Copy bundle to 'assets/bundles' directory of Android application">
+        
+        <!-- copy bundle to 'bundles' directory -->
+	<copy file="${project.build.directory}/${maven.project.finalName}.jar" todir="${root.dir}/app/assets/bundles" />
+    </target>
+    
+</project>

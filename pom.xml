@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tcs</groupId>
+    <artifactId>sbi</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>DEMUX Framework bundle</name>
+    <url>http://demux.vektorsoft.com</url>
+    
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.0</version>
+                    <configuration>
+                        <!--
+                         Use source/target level 1.6 to make modules reusable on Android 
+                        -->
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                      <Bundle-Activator>com.tcs.SampleActivator</Bundle-Activator>
+                      <Bundle-SymbolicName>sbi</Bundle-SymbolicName>
+                      <Export-Package>com.tcs</Export-Package>
+                      <!-- To include binary stylesheets, uncomment the <Include-Resource> directive and
+                           specify binary CSS files (.bss) that should be included in final .jar. Note that
+                           these are generated under target/classes. Each .bss needs to be included (no wildcards) -->
+                      <!-- Include-Resource>${project.build.outputDirectory}/path/to/my.bss</Include-Resource-->
+                  </instructions>
+                </configuration>
+            </plugin>
+            
+           
+            <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-antrun-plugin</artifactId>
+                 <executions>
+                      <!-- Converts JavaFX CSS files to binary format -->
+                     <execution>
+                         <id>convert-css</id>
+                         <phase>generate-sources</phase>
+                         <configuration>
+                             <target>
+                                 <ant antfile="antrun-build.xml" target="css-to-bin" />
+                             </target>
+                         </configuration>
+                         <goals>
+                             <goal>run</goal>
+                         </goals>
+                     </execution>
+                     <execution>
+                         <id>on-install</id>
+                         <phase>install</phase>
+                         <configuration>
+                             <target>
+                                 <ant antfile="antrun-build.xml" target="copy-bundle" />
+                             </target>
+                         </configuration>
+                         <goals>
+                             <goal>run</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+            </plugin>
+        </plugins>
+    </build>
+   
+</project>
